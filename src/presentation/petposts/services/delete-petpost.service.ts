@@ -1,5 +1,5 @@
 import { FinderPetPostService } from './finder-petpost.service';
-import { PetPostStatus } from '../../../data';
+import { PetPost } from '../../../data';
 
 export class DeletePetPostService {
   constructor(private readonly finderPetPostService: FinderPetPostService) { }
@@ -7,10 +7,9 @@ export class DeletePetPostService {
   async execute(id: string) {
     const petPost = await this.finderPetPostService.executeByFindOne(id);
 
-    petPost.status = PetPostStatus.REJECTED;
-
     try {
-      await petPost.save();
+      await PetPost.remove(petPost); // 🔥 eliminación física
+
       return {
         message: 'PetPost deleted successfully',
       };

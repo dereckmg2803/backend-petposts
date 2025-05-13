@@ -3,7 +3,8 @@ import { CreatorPetPostService } from './services/create-petpost.service';
 import { FinderPetPostService } from './services/finder-petpost.service';
 import { DeletePetPostService } from './services/delete-petpost.service';
 import { UpdatePetPostService } from './services/update-petpost.service';
-import { PetPostStatus } from '../../data/postgres/models/petpost.model';  // Asegúrate de que la ruta sea correcta según tu estructura de carpetas
+import { ApprovePetPostService } from './services/approve-petpost.service';
+import { RejectPetPostService } from './services/reject-petpost.service';
 
 
 export class PetPostController {
@@ -11,7 +12,9 @@ export class PetPostController {
     private readonly creatorPetPostService: CreatorPetPostService,
     private readonly finderPetPostService: FinderPetPostService,
     private readonly deletePetPostService: DeletePetPostService,
-    private readonly updatePetPostService: UpdatePetPostService
+    private readonly updatePetPostService: UpdatePetPostService,
+    private readonly approvePetPostService: ApprovePetPostService,
+    private readonly rejectPetPostService: RejectPetPostService
   ) { }
 
   createPetPost = (req: Request, res: Response) => {
@@ -58,40 +61,24 @@ export class PetPostController {
       .catch((error) => res.status(500).json({ message: error.message }));
   };
 
-  // Método para aprobar un PetPost
-  approvePetPost = async (req: Request, res: Response) => {
-    try {
-      const petPostId = req.params.id;
-      const petPost = await this.finderPetPostService.executeByFindOne(petPostId);
-      if (!petPost) {
-        return res.status(404).json({ message: 'PetPost not found' });
-      }
+  approvePetPost = (req: Request, res: Response) => {
+    const { id } = req.params;
 
-      petPost.status = PetPostStatus.APPROVED;
-      await petPost.save();
-      res.status(200).json({ message: 'PetPost approved', petPost });
-    } catch (error) {
-      res.status(500).json({ message: 'Error approving pet post', error });
-    }
+    this.approvePetPostService
+      .execute(id)
+      .then((result) => res.status(200).json(result))
+      .catch((error) => res.status(500).json({ message: error.message }));
   };
 
+  rejectPetPost = (req: Request, res: Response) => {
+    const { id } = req.params;
 
-  // Método para rechazar un PetPost
-  rejectPetPost = async (req: Request, res: Response) => {
-    try {
-      const petPostId = req.params.id;
-      const petPost = await this.finderPetPostService.executeByFindOne(petPostId);
-      if (!petPost) {
-        return res.status(404).json({ message: 'PetPost not found' });
-      }
-
-      petPost.status = PetPostStatus.REJECTED;
-      await petPost.save();
-      res.status(200).json({ message: 'PetPost rejected', petPost });
-    } catch (error) {
-      res.status(500).json({ message: 'Error rejecting pet post', error });
-    }
+    this.rejectPetPostService
+      .execute(id)
+      .then((result) => res.status(200).json(result))
+      .catch((error) => res.status(500).json({ message: error.message }));
   };
+
 
 
 

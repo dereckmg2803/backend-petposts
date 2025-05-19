@@ -4,6 +4,8 @@ import { FinderUserService } from "./services/finder-user.service";
 import { DeleteUserService } from "./services/delete-user.service";
 import { UpdateUserService } from "./services/update-user.service";
 import { LoginUserService } from "./services/login-user.service";
+import { handleError } from '../common/handleError';
+import { CreateUserDto, UpdateUserDto } from '../../domain';
 
 export class UserController {
   constructor(
@@ -15,26 +17,33 @@ export class UserController {
   ) { }
 
   createUser = (req: Request, res: Response) => {
-    const data = req.body;
+    const [error, data] = CreateUserDto.execute(req.body);
+
+    if (error) {
+      return res.status(422).json({
+        status: 'error',
+        message: error,
+      });
+    }
 
     this.creatorUserService
       .execute(data)
       .then((result) => res.status(201).json(result))
-      .catch((error) => res.status(500).json(error));
+      .catch((error) => handleError(error, res));
   };
 
   loginUser = (req: Request, res: Response) => {
     this.loginUserService
       .execute()
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json(error));
+      .catch((error) => handleError(error, res));
   }
 
   findAllUsers = (req: Request, res: Response) => {
     this.finderUserService
       .executeByFindAll()
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json(error));
+      .catch((error) => handleError(error, res));
   };
 
   findOneUser = (req: Request, res: Response) => {
@@ -43,7 +52,7 @@ export class UserController {
     this.finderUserService
       .executeByFindOne(id)
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json(error));
+      .catch((error) => handleError(error, res));
   };
 
   deleteUser = (req: Request, res: Response) => {
@@ -52,17 +61,24 @@ export class UserController {
     this.deleteUserService
       .execute(id)
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json(error));
+      .catch((error) => handleError(error, res));
   };
 
   updateUser = (req: Request, res: Response) => {
     const { id } = req.params;
-    const data = req.body;
+    const [error, data] = UpdateUserDto.execute(req.body);
+
+    if (error) {
+      return res.status(422).json({
+        status: 'error',
+        message: error,
+      });
+    }
 
     this.updateUserService
       .execute(id, data)
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json(error));
+      .catch((error) => handleError(error, res));
   };
 
 

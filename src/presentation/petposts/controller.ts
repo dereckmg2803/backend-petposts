@@ -5,6 +5,8 @@ import { DeletePetPostService } from './services/delete-petpost.service';
 import { UpdatePetPostService } from './services/update-petpost.service';
 import { ApprovePetPostService } from './services/approve-petpost.service';
 import { RejectPetPostService } from './services/reject-petpost.service';
+import { handleError } from '../common/handleError';
+import { CreatePetPostsDto, UpdatePetPostDto } from '../../domain';
 
 
 export class PetPostController {
@@ -18,19 +20,26 @@ export class PetPostController {
   ) { }
 
   createPetPost = (req: Request, res: Response) => {
-    const data = req.body;
+    const [error, data] = CreatePetPostsDto.execute(req.body);
+
+    if (error) {
+      return res.status(422).json({
+        status: 'error',
+        message: error,
+      });
+    }
 
     this.creatorPetPostService
       .execute(data)
       .then((result) => res.status(201).json(result))
-      .catch((error) => res.status(500).json({ message: error.message }));
+      .catch((error) => handleError(error, res));
   };
 
   findAllPetPosts = (_req: Request, res: Response) => {
     this.finderPetPostService
       .executeByFindAll()
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json({ message: error.message }));
+      .catch((error) => handleError(error, res));
   };
 
   findOnePetPost = (req: Request, res: Response) => {
@@ -39,7 +48,7 @@ export class PetPostController {
     this.finderPetPostService
       .executeByFindOne(id)
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(404).json({ message: error.message }));
+      .catch((error) => handleError(error, res));
   };
 
   deletePetPost = (req: Request, res: Response) => {
@@ -48,17 +57,24 @@ export class PetPostController {
     this.deletePetPostService
       .execute(id)
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json({ message: error.message }));
+      .catch((error) => handleError(error, res));
   };
 
   updatePetPost = (req: Request, res: Response) => {
     const { id } = req.params;
-    const data = req.body;
+    const [error, data] = UpdatePetPostDto.execute(req.body);
+
+    if (error) {
+      return res.status(422).json({
+        status: 'error',
+        message: error,
+      });
+    }
 
     this.updatePetPostService
       .execute(id, data)
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json({ message: error.message }));
+      .catch((error) => handleError(error, res));
   };
 
   approvePetPost = (req: Request, res: Response) => {
@@ -67,7 +83,7 @@ export class PetPostController {
     this.approvePetPostService
       .execute(id)
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json({ message: error.message }));
+      .catch((error) => handleError(error, res));
   };
 
   rejectPetPost = (req: Request, res: Response) => {
@@ -76,7 +92,7 @@ export class PetPostController {
     this.rejectPetPostService
       .execute(id)
       .then((result) => res.status(200).json(result))
-      .catch((error) => res.status(500).json({ message: error.message }));
+      .catch((error) => handleError(error, res));
   };
 
 

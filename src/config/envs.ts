@@ -9,5 +9,7 @@ export const envs = {
   DATABASE_PASSWORD: get("DATABASE_PASSWORD").required().asString(),
   DATABASE_HOST: get("DATABASE_HOST").required().asString(),
   DATABASE_PORT: get("DATABASE_PORT").required().asPortNumber(),
-  DATABASE_NAME: get("DATABASE_NAME").required().asString()
+  DATABASE_NAME: get("DATABASE_NAME").required().asString(),
+  JWT_KEY: get('JWT_KEY').required().asString(),
+
 };

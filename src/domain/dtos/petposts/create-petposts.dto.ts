@@ -1,30 +1,46 @@
 import { z } from 'zod';
+import { PetPostStatus } from '../../../data';
 
 export const CreatePetPostSchema = z.object({
-  name: z
-    .string({ required_error: 'name is required' })
-    .min(3, 'name must be at least 3 characters long')
-    .max(30, 'name must be at most 30 characters long'),
+  pet_name: z
+    .string({ required_error: 'pet_name is required' })
+    .min(3, 'pet_name must be at least 3 characters long')
+    .max(50, 'pet_name must be at most 50 characters long'),
 
-  breed: z
-    .string({ required_error: 'breed is required' })
-    .min(3, 'breed must be at least 3 characters long')
-    .max(30, 'breed must be at most 30 characters long'),
+  description: z
+    .string({ required_error: 'description is required' })
+    .min(10, 'description must be at least 10 characters long'),
 
-  weight: z
-    .number({ required_error: 'weight is required' })
-    .min(0.1, 'weight must be a positive number')
-    .max(200, 'weight must be at most 200'),
+  image_url: z
+    .string({ required_error: 'image_url is required' })
+    .url('image_url must be a valid URL'),
+
+  owner: z
+    .string({ required_error: 'owner is required' })
+    .min(3, 'owner must be at least 3 characters long'),
+
+  status: z
+    .nativeEnum(PetPostStatus)
+    .optional() // opcional porque puede quedar en default: pending
+
+  ,
+
+  hasfound: z
+    .boolean()
+    .optional() // opcional porque puede quedar como default: false
 });
 
-export class CreatePetPostsDto {
+export class CreatePetPostDto {
   constructor(
-    public readonly name: string,
-    public readonly breed: string,
-    public readonly weight: number
+    public readonly pet_name: string,
+    public readonly description: string,
+    public readonly image_url: string,
+    public readonly owner: string,
+    public readonly status: PetPostStatus = PetPostStatus.PENDING,
+    public readonly hasfound: boolean = false
   ) { }
 
-  static execute(input: { [key: string]: any }): [string?, CreatePetPostsDto?] {
+  static execute(input: { [key: string]: any }): [string?, CreatePetPostDto?] {
     const parseResult = CreatePetPostSchema.safeParse(input);
 
     if (!parseResult.success) {
@@ -32,8 +48,14 @@ export class CreatePetPostsDto {
       return [error];
     }
 
-    const { name, breed, weight } = parseResult.data;
-    return [undefined, new CreatePetPostsDto(name, breed, weight)];
+    const { pet_name, description, image_url, owner, status, hasfound } = parseResult.data;
+    return [undefined, new CreatePetPostDto(
+      pet_name,
+      description,
+      image_url,
+      owner,
+      status ?? PetPostStatus.PENDING,
+      hasfound ?? false
+    )];
   }
 }
-

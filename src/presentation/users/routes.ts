@@ -7,6 +7,8 @@ import { UpdateUserService } from "./services/update-user.service";
 import { LoginUserService } from "./services/login-user.service";
 import { EmailService } from "../common/services/email.service";
 import { envs } from "../../config";
+import { AuthMiddleware } from "../common/middlewares/auth.middleware";
+import { UserRole } from "../../data"; // Asegúrate de importar bien esto
 
 export class UserRoutes {
   static get routes(): Router {
@@ -33,15 +35,15 @@ export class UserRoutes {
       loginUserService
     );
 
-    // 🔹 Rutas
-    router.get("/", controller.findAllUsers);
-    router.post("/", controller.createUser);
+    // ✅ Ruta pública (no requiere login ni rol)
+    router.post("/login", controller.loginUser);
+    router.post("/register", controller.createUser);
     router.get("/:id", controller.findOneUser);
     router.patch("/:id", controller.updateUser);
+    // ✅ Rutas protegidas y con rol de ADMIN
+    router.use(AuthMiddleware.protect, AuthMiddleware.restrictTo(UserRole.ADMIN));
+    router.get("/", controller.findAllUsers);
     router.delete("/:id", controller.deleteUser);
-
-    // 🔹 Ruta de login
-    router.post("/login", controller.loginUser);
 
     return router;
   }

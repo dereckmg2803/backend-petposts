@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Server = void 0;
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_1 = __importDefault(require("express"));
 class Server {
     constructor(options) {
@@ -36,6 +37,7 @@ class Server {
         return __awaiter(this, void 0, void 0, function* () {
             this.app.use(express_1.default.json());
             this.app.use(express_1.default.urlencoded({ extended: true }));
+            this.app.use((0, cookie_parser_1.default)());
             //rutas
             this.app.use(this.routes);
             this.app.listen(this.port, () => {

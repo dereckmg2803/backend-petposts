@@ -15,8 +15,7 @@ export class RejectPetPostService {
         await petPost.save();
 
         return {
-            message: 'PetPost rejected',
-            petPost,
+            message: 'PetPost rejected'
         };
     }
 }

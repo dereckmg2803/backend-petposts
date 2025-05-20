@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const handleError_1 = require("../common/handleError");
 const domain_1 = require("../../domain");
+const login_user_dto_1 = require("../../domain/dtos/users/login-user.dto");
 class UserController {
     constructor(creatorUserService, finderUserService, deleteUserService, updateUserService, loginUserService) {
         this.creatorUserService = creatorUserService;
@@ -24,9 +25,21 @@ class UserController {
                 .catch((error) => (0, handleError_1.handleError)(error, res));
         };
         this.loginUser = (req, res) => {
+            const [error, data] = login_user_dto_1.LoginUserDto.execute(req.body);
+            if (error) {
+                return res.status(422).json({ message: error });
+            }
             this.loginUserService
-                .execute()
-                .then((result) => res.status(200).json(result))
+                .execute(data)
+                .then((result) => {
+                res.cookie('token', result.token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                    maxAge: 3 * 60 * 60 * 1000, // 3 horas
+                });
+                res.status(200).json(result);
+            })
                 .catch((error) => (0, handleError_1.handleError)(error, res));
         };
         this.findAllUsers = (req, res) => {

@@ -7,6 +7,9 @@ import { DeletePetPostService } from './services/delete-petpost.service';
 import { UpdatePetPostService } from './services/update-petpost.service';
 import { ApprovePetPostService } from './services/approve-petpost.service';
 import { RejectPetPostService } from './services/reject-petpost.service';
+import { AuthMiddleware } from "../common/middlewares/auth.middleware";
+import { UserRole } from "../../data";
+import { PetPostMiddleware } from "../common/middlewares/petpost.middleware";
 
 export class PetPostRoutes {
   static get routes(): Router {
@@ -28,16 +31,23 @@ export class PetPostRoutes {
       rejectPetPostService
     );
 
-    router.get("/", controller.findAllPetPosts);
-    router.post("/", controller.createPetPost);
+    router.get('/', controller.findAllPetPosts);
+
     router.get("/:id", controller.findOnePetPost);
+
+    // Rutas solo para usuarios autenticados normales
+    router.post("/", AuthMiddleware.restrictTo(UserRole.USER), controller.createPetPost);
+
+    router.use("/:id", AuthMiddleware.protect, PetPostMiddleware.checkOwnershipOrAdmin);
     router.patch("/:id", controller.updatePetPost);
     router.delete("/:id", controller.deletePetPost);
 
-    // Agregando rutas para aprobar y rechazar
+
+
+    // Rutas solo para admins
+    router.use(AuthMiddleware.protect, AuthMiddleware.restrictTo(UserRole.ADMIN));
     router.patch("/:id/approve", controller.approvePetPost);
     router.patch("/:id/reject", controller.rejectPetPost);
-
     return router;
   }
 }

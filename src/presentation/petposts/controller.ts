@@ -6,7 +6,7 @@ import { UpdatePetPostService } from './services/update-petpost.service';
 import { ApprovePetPostService } from './services/approve-petpost.service';
 import { RejectPetPostService } from './services/reject-petpost.service';
 import { handleError } from '../common/handleError';
-import { CreatePetPostsDto, UpdatePetPostDto } from '../../domain';
+import { CreatePetPostDto, UpdatePetPostDto } from '../../domain';
 
 
 export class PetPostController {
@@ -20,7 +20,7 @@ export class PetPostController {
   ) { }
 
   createPetPost = (req: Request, res: Response) => {
-    const [error, data] = CreatePetPostsDto.execute(req.body);
+    const [error, data] = CreatePetPostDto.execute(req.body);
 
     if (error) {
       return res.status(422).json({

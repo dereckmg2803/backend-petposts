@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import express, { Router } from 'express';
 
 interface Options {
@@ -30,6 +31,7 @@ export class Server {
   async start() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(cookieParser());
 
     //rutas
     this.app.use(this.routes);

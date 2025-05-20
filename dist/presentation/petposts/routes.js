@@ -10,6 +10,9 @@ const delete_petpost_service_1 = require("./services/delete-petpost.service");
 const update_petpost_service_1 = require("./services/update-petpost.service");
 const approve_petpost_service_1 = require("./services/approve-petpost.service");
 const reject_petpost_service_1 = require("./services/reject-petpost.service");
+const auth_middleware_1 = require("../common/middlewares/auth.middleware");
+const data_1 = require("../../data");
+const petpost_middleware_1 = require("../common/middlewares/petpost.middleware");
 class PetPostRoutes {
     static get routes() {
         const router = (0, express_1.Router)();
@@ -20,12 +23,15 @@ class PetPostRoutes {
         const approvePetPostService = new approve_petpost_service_1.ApprovePetPostService(finderPetPostService);
         const rejectPetPostService = new reject_petpost_service_1.RejectPetPostService(finderPetPostService);
         const controller = new controller_1.PetPostController(createPetPostService, finderPetPostService, deletePetPostService, updatePetPostService, approvePetPostService, rejectPetPostService);
-        router.get("/", controller.findAllPetPosts);
-        router.post("/", controller.createPetPost);
+        router.get('/', controller.findAllPetPosts);
         router.get("/:id", controller.findOnePetPost);
+        // Rutas solo para usuarios autenticados normales
+        router.post("/", auth_middleware_1.AuthMiddleware.restrictTo(data_1.UserRole.USER), controller.createPetPost);
+        router.use("/:id", auth_middleware_1.AuthMiddleware.protect, petpost_middleware_1.PetPostMiddleware.checkOwnershipOrAdmin);
         router.patch("/:id", controller.updatePetPost);
         router.delete("/:id", controller.deletePetPost);
-        // Agregando rutas para aprobar y rechazar
+        // Rutas solo para admins
+        router.use(auth_middleware_1.AuthMiddleware.protect, auth_middleware_1.AuthMiddleware.restrictTo(data_1.UserRole.ADMIN));
         router.patch("/:id/approve", controller.approvePetPost);
         router.patch("/:id/reject", controller.rejectPetPost);
         return router;

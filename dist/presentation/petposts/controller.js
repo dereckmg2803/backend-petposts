@@ -12,7 +12,7 @@ class PetPostController {
         this.approvePetPostService = approvePetPostService;
         this.rejectPetPostService = rejectPetPostService;
         this.createPetPost = (req, res) => {
-            const [error, data] = domain_1.CreatePetPostsDto.execute(req.body);
+            const [error, data] = domain_1.CreatePetPostDto.execute(req.body);
             if (error) {
                 return res.status(422).json({
                     status: 'error',

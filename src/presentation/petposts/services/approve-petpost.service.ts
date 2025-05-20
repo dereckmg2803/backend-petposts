@@ -15,8 +15,7 @@ export class ApprovePetPostService {
         await petPost.save();
 
         return {
-            message: 'PetPost approved',
-            petPost,
+            message: 'PetPost approved'
         };
     }
 }

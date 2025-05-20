@@ -45,9 +45,6 @@ exports.AuthMiddleware = AuthMiddleware;
 AuthMiddleware.restrictTo = (...roles) => {
     return (req, res, next) => {
         const sessionUser = req.sessionUser;
-        console.log('🧠 RestrictTo Debug');
-        console.log('Usuario:', sessionUser);
-        console.log('Rol requerido:', roles);
         if (!sessionUser || !roles.includes(sessionUser.role)) {
             return res.status(403).json({
                 message: 'You are not authorized to access this route',

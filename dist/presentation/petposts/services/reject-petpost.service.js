@@ -24,8 +24,7 @@ class RejectPetPostService {
             petPost.status = data_1.PetPostStatus.REJECTED;
             yield petPost.save();
             return {
-                message: 'PetPost rejected',
-                petPost,
+                message: 'PetPost rejected'
             };
         });
     }

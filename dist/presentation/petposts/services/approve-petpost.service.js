@@ -24,8 +24,7 @@ class ApprovePetPostService {
             petPost.status = data_1.PetPostStatus.APPROVED;
             yield petPost.save();
             return {
-                message: 'PetPost approved',
-                petPost,
+                message: 'PetPost approved'
             };
         });
     }

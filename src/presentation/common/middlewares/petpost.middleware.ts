@@ -7,7 +7,6 @@ export class PetPostMiddleware {
     static async checkOwnershipOrAdmin(req: Request, res: Response, next: NextFunction) {
         const { id } = req.params;
         const user = (req as any).sessionUser as User;
-        console.log("👤 Usuario en middleware:", user);
 
 
         try {

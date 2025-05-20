@@ -6,6 +6,7 @@ import { UpdateUserService } from "./services/update-user.service";
 import { LoginUserService } from "./services/login-user.service";
 import { handleError } from '../common/handleError';
 import { CreateUserDto, UpdateUserDto } from '../../domain';
+import { LoginUserDto } from "../../domain/dtos/users/login-user.dto";
 
 export class UserController {
   constructor(
@@ -33,11 +34,26 @@ export class UserController {
   };
 
   loginUser = (req: Request, res: Response) => {
+    const [error, data] = LoginUserDto.execute(req.body);
+
+    if (error) {
+      return res.status(422).json({ message: error });
+    }
+
     this.loginUserService
-      .execute()
-      .then((result) => res.status(200).json(result))
+      .execute(data!)
+      .then((result) => {
+        res.cookie('token', result.token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+          maxAge: 3 * 60 * 60 * 1000, // 3 horas
+        });
+        res.status(200).json(result);
+      })
       .catch((error) => handleError(error, res));
-  }
+  };
+
 
   findAllUsers = (req: Request, res: Response) => {
     this.finderUserService

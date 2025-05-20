@@ -2,8 +2,11 @@ import { encryptAdapter } from "../../../config/bcrypt.adapter";
 import { JwtAdapter } from "../../../config/jwt.adapter";
 import { User } from "../../../data";
 import { CustomError } from "../../../domain";
+import { EmailService } from "../../common/services/email.service";
 
 export class CreatorUserService {
+  constructor(private readonly emailService: EmailService) { }
+
   async execute(data: any) {
     const user = new User();
     user.name = data.name;
@@ -27,7 +30,19 @@ export class CreatorUserService {
     if (!token) throw CustomError.internalServer('Error gettin token');
 
     const link = `http://localhost:3000/api/v1/users/validate-account/${token}`;
-    console.log(link);
+    const html = `
+      <h1>Validate Your email</h1>
+      <p>Click on the following link to validate your email</p>
+      <a href="${link}">Validate your email: ${email}</a>
+    `;
+
+    const isSent = await this.emailService.sendEmail({
+      to: email,
+      subject: 'Validate your account!',
+      htmlBody: html,
+    });
+    if (!isSent) throw CustomError.internalServer('Error sending email');
+    return true;
   };
 
   public validateAccount = async (token: string) => {

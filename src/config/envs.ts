@@ -10,6 +10,13 @@ export const envs = {
   DATABASE_HOST: get("DATABASE_HOST").required().asString(),
   DATABASE_PORT: get("DATABASE_PORT").required().asPortNumber(),
   DATABASE_NAME: get("DATABASE_NAME").required().asString(),
+
   JWT_KEY: get('JWT_KEY').required().asString(),
+  JWT_EXPIRE_IN: get('JWET_EXPIRE_IN').required().asString(),
+
+  MAILER_SERVICE: get('MAILER_SERVICE').required().asString(),
+  MAILER_EMAIL: get('MAILER_EMAIL').required().asString(),
+  MAILER_SECRET_KEY: get('MAILER_SECRET_KEY').required().asString(),
+  SEND_MAIL: get('SEND_MAIL').required().asBool()
 
 };

@@ -20,12 +20,12 @@ class CreatorUserService {
         this.sendLinkToEmailFronValidationAccount = (email) => __awaiter(this, void 0, void 0, function* () {
             const token = yield jwt_adapter_1.JwtAdapter.generateToken({ email }, '300s');
             if (!token)
-                throw domain_1.CustomError.internalServer('Error gettin token');
+                throw domain_1.CustomError.internalServer('Error getting token');
             const link = `http://localhost:3000/api/v1/users/validate-account/${token}`;
             const html = `
-      <h1>Validate Your email</h1>
-      <p>Click on the following link to validate your email</p>
-      <a href="${link}">Validate your email: ${email}</a>
+      <h1>Validate Your Email</h1>
+      <p>Click the link below to validate your email:</p>
+      <a href="${link}">${link}</a>
     `;
             const isSent = yield this.emailService.sendEmail({
                 to: email,
@@ -41,13 +41,14 @@ class CreatorUserService {
             const { email } = payload;
             if (!email)
                 throw domain_1.CustomError.internalServer('Email not found in token');
-            const user = yield this.ensureUserExistWhitEmail(email);
+            const user = yield this.ensureUserExistsByEmail(email);
             user.status = true;
             try {
                 yield user.save();
-                return 'user activated';
+                return 'User activated successfully';
             }
             catch (error) {
+                console.error(error);
                 throw domain_1.CustomError.internalServer('Something went very wrong');
             }
         });
@@ -55,14 +56,16 @@ class CreatorUserService {
     execute(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = new data_1.User();
+            console.log("Ejecutamos el servicio de crear usuario");
             user.name = data.name;
             user.email = data.email;
-            user.password = bcrypt_adapter_1.encryptAdapter.hash(data.password); // Asegúrate de hashearla si es necesario
+            user.password = bcrypt_adapter_1.encryptAdapter.hash(data.password);
             user.role = data.role || "user";
             try {
                 yield user.save();
+                yield this.sendLinkToEmailFronValidationAccount(data.email);
                 return {
-                    message: "User created successfully",
+                    message: "User created successfully. Please check your email to validate your account.",
                 };
             }
             catch (error) {
@@ -71,15 +74,11 @@ class CreatorUserService {
             }
         });
     }
-    ensureUserExistWhitEmail(email) {
+    ensureUserExistsByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield data_1.User.findOne({
-                where: {
-                    email: email,
-                },
-            });
+            const user = yield data_1.User.findOne({ where: { email } });
             if (!user) {
-                throw domain_1.CustomError.internalServer('Email no registered in db');
+                throw domain_1.CustomError.internalServer('Email not registered in DB');
             }
             return user;
         });

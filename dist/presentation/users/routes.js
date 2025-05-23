@@ -26,10 +26,11 @@ class UserRoutes {
         router.post("/login", controller.loginUser);
         router.post("/register", controller.createUser);
         router.get("/:id", controller.findOneUser);
-        router.patch("/:id", controller.updateUser);
+        router.get("/", controller.findAllUsers);
+        router.get('/validate-account/:token', controller.validateAccount);
         // ✅ Rutas protegidas y con rol de ADMIN
         router.use(auth_middleware_1.AuthMiddleware.protect, auth_middleware_1.AuthMiddleware.restrictTo(data_1.UserRole.ADMIN));
-        router.get("/", controller.findAllUsers);
+        router.patch("/:id", controller.updateUser);
         router.delete("/:id", controller.deleteUser);
         return router;
     }

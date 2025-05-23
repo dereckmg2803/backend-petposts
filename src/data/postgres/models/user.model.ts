@@ -40,11 +40,8 @@ export class User extends BaseEntity {
     })
     role!: UserRole;
 
-    @Column('boolean', {
-        default: true,
-        nullable: false,
-    })
-    status!: boolean;
+    @Column({ type: 'boolean', default: false, nullable: false })
+    status: boolean;
 
     @CreateDateColumn()
     created_at!: Date;

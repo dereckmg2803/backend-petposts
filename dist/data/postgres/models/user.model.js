@@ -52,10 +52,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
-    (0, typeorm_1.Column)('boolean', {
-        default: true,
-        nullable: false,
-    }),
+    (0, typeorm_1.Column)({ type: 'boolean', default: false, nullable: false }),
     __metadata("design:type", Boolean)
 ], User.prototype, "status", void 0);
 __decorate([

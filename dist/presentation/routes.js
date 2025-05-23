@@ -11,7 +11,7 @@ class AppRoutes {
         // Rutas de mascotas
         router.use("/api/v1/petposts", auth_middleware_1.AuthMiddleware.protect, routes_1.PetPostRoutes.routes);
         // Rutas de usuarios
-        router.use("/api/v1/users", auth_middleware_1.AuthMiddleware.protect, routes_2.UserRoutes.routes); // Añadir ruta de usuarios
+        router.use("/api/v1/users", routes_2.UserRoutes.routes); // Añadir ruta de usuarios
         // Puedes agregar más rutas aquí, como la de los doctores si es necesario
         // router.use("/api/v1/doctors", DoctorRoutes.routes);
         return router;

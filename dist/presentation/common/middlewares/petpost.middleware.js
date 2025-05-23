@@ -17,7 +17,6 @@ class PetPostMiddleware {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             const user = req.sessionUser;
-            console.log("👤 Usuario en middleware:", user);
             try {
                 const petPost = yield petpost_model_1.PetPost.findOne({ where: { id } });
                 if (!petPost) {

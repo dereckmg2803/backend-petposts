@@ -76,6 +76,15 @@ class UserController {
                 .then((result) => res.status(200).json(result))
                 .catch((error) => (0, handleError_1.handleError)(error, res));
         };
+        this.validateAccount = (req, res) => {
+            const { token } = req.params;
+            console.log('Validando cuenta');
+            console.log(token);
+            this.creatorUserService
+                .validateAccount(token)
+                .then((message) => res.status(201).json({ message }))
+                .catch((error) => (0, handleError_1.handleError)(error, res));
+        };
     }
 }
 exports.UserController = UserController;

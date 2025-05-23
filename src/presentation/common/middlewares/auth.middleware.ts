@@ -3,6 +3,7 @@ import { JwtAdapter } from '../../../config';
 import { User, UserRole } from '../../../data/postgres/models/user.model';
 
 export class AuthMiddleware {
+
   static async protect(req: Request, res: Response, next: NextFunction) {
     const token = req.cookies.token;
 

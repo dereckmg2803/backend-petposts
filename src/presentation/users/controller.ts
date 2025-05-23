@@ -97,5 +97,15 @@ export class UserController {
       .catch((error) => handleError(error, res));
   };
 
+  validateAccount = (req: Request, res: Response) => {
+    const { token } = req.params;
+
+    console.log('Validando cuenta');
+    console.log(token);
+    this.creatorUserService
+      .validateAccount(token)
+      .then((message) => res.status(201).json({ message }))
+      .catch((error) => handleError(error, res));
+  };
 
 }

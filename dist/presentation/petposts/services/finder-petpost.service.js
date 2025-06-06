@@ -19,6 +19,14 @@ class FinderPetPostService {
                     status: data_1.PetPostStatus.APPROVED,
                     hasfound: false
                 },
+                relations: ['user'],
+                select: {
+                    user: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
                 order: {
                     created_at: 'DESC',
                 },
@@ -28,11 +36,18 @@ class FinderPetPostService {
     }
     executeByFindOne(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const petPost = yield data_1.PetPost.findOne({
-                where: {
-                    id
-                },
-            });
+            const petPost = yield data_1.PetPost.createQueryBuilder('petPost')
+                .leftJoinAndSelect('petPost.user', 'user')
+                .select([
+                'petPost',
+                'user.id',
+                'user.name',
+                'user.email',
+                'user.role',
+                'user.status'
+            ])
+                .where('petPost.id = :id', { id })
+                .getOne();
             if (!petPost) {
                 throw new Error('PetPost not found');
             }

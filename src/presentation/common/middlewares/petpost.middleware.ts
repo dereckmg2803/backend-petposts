@@ -17,7 +17,7 @@ export class PetPostMiddleware {
             }
 
             // Si es el dueño o es admin, sigue
-            if (petPost.owner === user.id || user.role === UserRole.ADMIN) {
+            if (petPost.user.id === user.id || user.role === UserRole.ADMIN) {
                 return next();
             }
 

@@ -13,10 +13,12 @@ const reject_petpost_service_1 = require("./services/reject-petpost.service");
 const auth_middleware_1 = require("../common/middlewares/auth.middleware");
 const data_1 = require("../../data");
 const petpost_middleware_1 = require("../common/middlewares/petpost.middleware");
+const finder_user_service_1 = require("../users/services/finder-user.service");
 class PetPostRoutes {
     static get routes() {
         const router = (0, express_1.Router)();
-        const createPetPostService = new create_petpost_service_1.CreatorPetPostService();
+        const finderUserService = new finder_user_service_1.FinderUserService(); // Asumiendo que tienes un servicio para encontrar usuarios
+        const createPetPostService = new create_petpost_service_1.CreatorPetPostService(finderUserService);
         const finderPetPostService = new finder_petpost_service_1.FinderPetPostService();
         const deletePetPostService = new delete_petpost_service_1.DeletePetPostService(finderPetPostService);
         const updatePetPostService = new update_petpost_service_1.UpdatePetPostService(finderPetPostService);

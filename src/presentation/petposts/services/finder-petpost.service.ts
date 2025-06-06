@@ -7,6 +7,14 @@ export class FinderPetPostService {
         status: PetPostStatus.APPROVED,
         hasfound: false
       },
+      relations: ['user'],
+      select: {
+        user: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
       order: {
         created_at: 'DESC',
       },
@@ -16,11 +24,18 @@ export class FinderPetPostService {
   }
 
   async executeByFindOne(id: string) {
-    const petPost = await PetPost.findOne({
-      where: {
-        id
-      },
-    });
+    const petPost = await PetPost.createQueryBuilder('petPost')
+      .leftJoinAndSelect('petPost.user', 'user')
+      .select([
+        'petPost',
+        'user.id',
+        'user.name',
+        'user.email',
+        'user.role',
+        'user.status'
+      ])
+      .where('petPost.id = :id', { id })
+      .getOne();
 
     if (!petPost) {
       throw new Error('PetPost not found');

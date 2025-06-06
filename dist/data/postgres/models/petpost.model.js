@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PetPost = exports.PetPostStatus = void 0;
 const typeorm_1 = require("typeorm");
+const user_model_1 = require("./user.model");
 var PetPostStatus;
 (function (PetPostStatus) {
     PetPostStatus["PENDING"] = "pending";
@@ -52,12 +53,6 @@ __decorate([
     __metadata("design:type", String)
 ], PetPost.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.Column)('varchar', {
-        nullable: false,
-    }),
-    __metadata("design:type", String)
-], PetPost.prototype, "owner", void 0);
-__decorate([
     (0, typeorm_1.Column)('boolean', {
         default: false,
         nullable: false,
@@ -68,6 +63,11 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], PetPost.prototype, "created_at", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_model_1.User, (user) => user.pet),
+    (0, typeorm_1.JoinColumn)({ name: 'owner' }),
+    __metadata("design:type", user_model_1.User)
+], PetPost.prototype, "user", void 0);
 exports.PetPost = PetPost = __decorate([
     (0, typeorm_1.Entity)()
 ], PetPost);

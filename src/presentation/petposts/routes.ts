@@ -10,12 +10,13 @@ import { RejectPetPostService } from './services/reject-petpost.service';
 import { AuthMiddleware } from "../common/middlewares/auth.middleware";
 import { UserRole } from "../../data";
 import { PetPostMiddleware } from "../common/middlewares/petpost.middleware";
+import { FinderUserService } from "../users/services/finder-user.service";
 
 export class PetPostRoutes {
   static get routes(): Router {
     const router = Router();
-
-    const createPetPostService = new CreatorPetPostService();
+    const finderUserService = new FinderUserService(); // Asumiendo que tienes un servicio para encontrar usuarios
+    const createPetPostService = new CreatorPetPostService(finderUserService);
     const finderPetPostService = new FinderPetPostService();
     const deletePetPostService = new DeletePetPostService(finderPetPostService);
     const updatePetPostService = new UpdatePetPostService(finderPetPostService);

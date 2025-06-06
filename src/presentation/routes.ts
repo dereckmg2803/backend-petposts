@@ -9,7 +9,7 @@ export class AppRoutes {
     const router = Router();
 
     // Rutas de mascotas
-    router.use("/api/v1/petposts", AuthMiddleware.protect, PetPostRoutes.routes);
+    router.use("/api/v1/petposts", PetPostRoutes.routes);
     // Rutas de usuarios
     router.use("/api/v1/users", UserRoutes.routes);  // Añadir ruta de usuarios
 

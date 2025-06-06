@@ -4,7 +4,9 @@ import {
     Entity,
     PrimaryGeneratedColumn,
     CreateDateColumn,
+    OneToMany,
 } from 'typeorm';
+import { PetPost } from './petpost.model';
 
 export enum UserRole {
     ADMIN = 'admin',
@@ -45,4 +47,7 @@ export class User extends BaseEntity {
 
     @CreateDateColumn()
     created_at!: Date;
+
+    @OneToMany(() => PetPost, (petPost) => petPost.user)
+    pet: PetPost[];
 }

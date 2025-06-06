@@ -23,7 +23,7 @@ class PetPostMiddleware {
                     return res.status(404).json({ message: "Publicación no encontrada" });
                 }
                 // Si es el dueño o es admin, sigue
-                if (petPost.owner === user.id || user.role === data_1.UserRole.ADMIN) {
+                if (petPost.user.id === user.id || user.role === data_1.UserRole.ADMIN) {
                     return next();
                 }
                 return res.status(403).json({ message: "No tienes permiso para esta acción" });
